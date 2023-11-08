@@ -1,0 +1,39 @@
+version: "3"
+
+services:
+  grafana:
+    image: grafana/grafana:10.2.0
+    container_name: grafana
+    restart: unless-stopped
+    environment:
+      - TZ=America/Argentina/Buenos_Aires #Set Time Argentina
+    volumes:
+      - grafana-data:/var/lib/grafana
+    ports:
+      - "3000:3000"
+    user: "0:0" #User root
+
+  loki:
+    image: grafana/loki:2.9.2
+    container_name: loki
+    restart: unless-stopped
+    environment:
+      - TZ=America/Argentina/Buenos_Aires #Set Time Argentina
+    volumes:
+      - ./loki-config.yml:/mnt/config/loki-config.yml
+      - /var/loki/grafana-logs-e2e/loki-data:/var/loki/grafana-logs-e2e/loki-data
+      - /var/loki/grafana-logs-e2e/loki-rules:/var/loki/grafana-logs-e2e/loki-rules
+      - /var/loki/grafana-logs-e2e/loki-boltdb-shipper-active:/var/loki/grafana-logs-e2e/loki-boltdb-shipper-active
+      - /var/loki/grafana-logs-e2e/loki-boltdb-shipper-cache:/var/loki/grafana-logs-e2e/loki-boltdb-shipper-cache
+    ports:
+      - "3100:3100"
+    command:
+      - "-config.file=/mnt/config/loki-config.yml"
+    user: "0:0" #User root
+
+volumes:
+  grafana-data:
+  loki-data:
+  loki-rules:
+  loki-boltdb-shipper-active:
+  loki-boltdb-shipper-cache:
