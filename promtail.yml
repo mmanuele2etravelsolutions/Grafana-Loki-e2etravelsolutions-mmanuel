@@ -1,0 +1,40 @@
+server:
+  http_listen_port: 9080
+  grpc_listen_port: 0
+
+positions:
+  filename: /tmp/positions.yaml
+
+clients:
+  - url: http://localhost:3100/loki/api/v1/push
+
+scrape_configs:
+- job_name: nginx
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: nginx
+      env: produccion
+      host: #ServerName
+      __path__: /var/log/nginx/*log
+
+- job_name: logs
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: logs
+      env: produccion
+      host: #ServerName
+      __path__: /var/log/*log
+
+- job_name: php
+  static_configs:
+  - targets:
+      - localhost
+    labels:
+      job: php5-fpm
+      env: produccion
+      host: #ServerName
+      __path__: /var/log/php5-fpm.log
